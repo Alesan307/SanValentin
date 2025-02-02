@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Quieres ser mi San Valentín?</title>
+  <style>
+    /* Estilos generales */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4, #ffdde1);
+      background-size: 400% 400%;
+      animation: gradientBG 6s infinite alternate;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .wrapper {
+      text-align: center;
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Animación de escritura */
+    .question-text {
+      font-size: 24px;
+      color: #4A4A4A;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid #FF6B6B;
+      width: 0;
+      animation: typing 2s steps(30, end) forwards, blink 0.7s infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Botones */
+    .btn {
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #FF6B6B;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #FF5252;
+    }
+
+    /* Botón Sí con efecto */
+    #yes-button:hover {
+      transform: scale(1.2);
+      background-color: #FF4081;
+    }
+
+    /* Botón No que se mueve */
+    #no-button {
+      position: absolute;
+    }
+
+    /* Corazones flotantes */
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      color: red;
+      opacity: 0;
+      animation: float 3s linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-150px);
+        opacity: 0;
+      }
+    }
+
+    /* Confeti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      opacity: 0;
+      animation: fall 2s linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(200px);
+        opacity: 0;
+      }
+    }
+
+    /* Mensaje final */
+    .final-message {
+      display: none;
+      font-size: 24px;
+      color: #FF6B6B;
+      font-weight: bold;
+      margin-top: 20px;
+      opacity: 0;
+      transform: scale(0);
+      animation: pop-in 0.5s ease-out forwards;
+    }
+
+    @keyframes pop-in {
+      0% { opacity: 0; transform: scale(0); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Música */
+    .music-control {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <p class="question-text">¿Quieres ser mi San Valentín?</p>
+    
+    <div class="buttons">
+      <button class="btn" id="yes-button">Sí</button>
+      <button class="btn" id="no-button">No</button>
+    </div>
+
+    <p class="final-message">¡Sabía que dirías que sí! ❤️</p>
+  </div>
+
+  <!-- Música -->
+  <div class="music-control">
+    <button class="btn" id="music-toggle">🎵 Activar Música</button>
+    <audio id="music" loop>
+      <source src="tu-cancion.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script>
+    let noClicks = 0;
+    const noButton = document.getElementById('no-button');
+    
+    // Mover el botón "No" cada vez más rápido
+    noButton.addEventListener('mouseover', function() {
+      noClicks++;
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 50);
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
+
+      if (noClicks === 3) {
+        alert("¡No puedes decir que no! 😜");
+      }
+    });
+
+    // Botón "Sí" activa corazones y confeti
+    document.getElementById('yes-button').addEventListener('click', function() {
+      document.querySelector('.final-message').style.display = 'block';
+      
+      // Generar corazones flotantes
+      for (let i = 0; i < 10; i++) {
+        let heart = document.createElement('div');
+        heart.innerHTML = '❤️';
+        heart.classList.add('heart');
+        document.body.appendChild(heart);
+
+        let randomX = Math.random() * window.innerWidth;
+        heart.style.left = `${randomX}px`;
+        
+        setTimeout(() => heart.remove(), 3000);
+      }
+    });
+
+    // Control de música
+    const music = document.getElementById('music');
+    document.getElementById('music-toggle').addEventListener('click', function() {
+      if (music.paused) {
+        music.play();
+        this.textContent = "🔇 Desactivar Música";
+      } else {
+        music.pause();
+        this.textContent = "🎵 Activar Música";
+      }
+    });
+  </script>
+
+</body>
+</html>
+      
